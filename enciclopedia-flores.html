@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🌸 Enciclopédia das Flores</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0ede8;
+  --text2: #9a9490;
+  --text3: #5a5652;
+  --accent: #c8a96e;
+  --accent2: #e8c88a;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ---- NOISE OVERLAY ---- */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events:none;
+  z-index:1000;
+}
+
+/* ---- FLOATING PARTICLES ---- */
+.particles {
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+  overflow:hidden;
+}
+.particle {
+  position:absolute;
+  border-radius:50%;
+  animation: particle-float linear infinite;
+  opacity:0;
+}
+@keyframes particle-float {
+  0%   { transform:translateY(100vh) rotate(0deg); opacity:0; }
+  10%  { opacity:0.6; }
+  90%  { opacity:0.3; }
+  100% { transform:translateY(-20px) rotate(720deg); opacity:0; }
+}
+
+/* ---- HERO ---- */
+header {
+  position:relative;
+  text-align:center;
+  padding: 80px 20px 60px;
+  z-index:2;
+}
+
+.hero-ornament {
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display:block;
+  animation: fadeDown 0.8s ease both;
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  animation: fadeDown 0.9s ease 0.1s both;
+}
+
+header h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+header p {
+  margin-top: 16px;
+  color: var(--text2);
+  font-size: 1rem;
+  font-weight:300;
+  max-width: 500px;
+  margin-left:auto;
+  margin-right:auto;
+  line-height:1.7;
+  animation: fadeDown 1s ease 0.2s both;
+}
+
+.hero-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 32px auto 0;
+  animation: expand 1.2s ease 0.4s both;
+}
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes expand { from{width:0;opacity:0} to{width:60px;opacity:1} }
+
+/* ---- CONTROLS ---- */
+.controls {
+  position:sticky;
+  top:0;
+  z-index:50;
+  background: rgba(10,10,10,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+}
+
+.controls-inner {
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.search-wrap {
+  position:relative;
+}
+
+.search-icon {
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color: var(--text3);
+  font-size:15px;
+  pointer-events:none;
+}
+
+#search {
+  width:100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 12px 16px 12px 44px;
+  border-radius: 12px;
+  font-size:14px;
+  font-family:'DM Sans',sans-serif;
+  outline:none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#search::placeholder { color:var(--text3) }
+#search:focus {
+  border-color: rgba(200,169,110,0.5);
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
+}
+
+.tabs {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.tab {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  font-family:'DM Sans',sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space:nowrap;
+}
+.tab:hover { border-color: var(--accent); color: var(--accent); }
+.tab.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); font-weight:500; }
+
+/* ---- GRID ---- */
+.count {
+  text-align:center;
+  font-size:12px;
+  color:var(--text3);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding: 24px 0 0;
+  z-index:2;
+  position:relative;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap:2px;
+  padding: 16px 2px 80px;
+  max-width:100%;
+}
+
+/* ---- CARD ---- */
+.card {
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  background: var(--bg2);
+  aspect-ratio: 3/4;
+  transition: transform 0.3s, z-index 0s;
+}
+
+.card:hover { z-index:5; transform:scale(1.03); }
+
+.card img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition: transform 0.6s ease, filter 0.6s ease;
+  filter: saturate(0.8) brightness(0.75);
+}
+
+.card:hover img {
+  transform: scale(1.08);
+  filter: saturate(1.1) brightness(0.6);
+}
+
+.card-overlay {
+  position:absolute;
+  inset:0;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:20px;
+  transition: background 0.3s;
+}
+
+.card:hover .card-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%);
+}
+
+.card-cat {
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color: var(--accent);
+  margin-bottom:6px;
+  font-weight:500;
+}
+
+.card-name {
+  font-family:'Playfair Display',serif;
+  font-size:1.3rem;
+  font-weight:700;
+  line-height:1.2;
+  color: #fff;
+}
+
+.card-latin {
+  font-size:12px;
+  font-style:italic;
+  color:rgba(255,255,255,0.45);
+  margin-top:4px;
+}
+
+.card-tags {
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:10px;
+  opacity:0;
+  transform:translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.card:hover .card-tags { opacity:1; transform:translateY(0); }
+
+.card-tag {
+  font-size:10px;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid rgba(200,169,110,0.4);
+  color:var(--accent2);
+  background:rgba(200,169,110,0.08);
+}
+
+/* ---- MODAL ---- */
+.modal-bg {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(8px);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal-bg.open { display:flex; }
+
+.modal {
+  background: var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  max-width:720px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  animation: modal-in 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes modal-in {
+  from{opacity:0;transform:scale(0.88) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+.modal-img {
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  border-radius:24px 24px 0 0;
+  display:block;
+}
+
+.modal-content { padding:32px; }
+
+.modal-header-row {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.modal-title-block {}
+.modal-cat { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.modal-name {
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  font-weight:700;
+  line-height:1.2;
+}
+.modal-latin {
+  font-size:14px;
+  font-style:italic;
+  color:var(--text2);
+  margin-top:6px;
+}
+
+.close-btn {
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--text2);
+  width:40px; height:40px;
+  border-radius:50%;
+  font-size:18px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  transition:all 0.2s;
+  line-height:1;
+}
+.close-btn:hover { background:var(--border2); color:var(--text); transform:rotate(90deg); }
+
+.modal-divider {
+  height:1px;
+  background:var(--border);
+  margin-bottom:24px;
+}
+
+.modal-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.info-block {
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+}
+
+.info-label {
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--text3);
+  margin-bottom:6px;
+}
+
+.info-val {
+  font-size:14px;
+  color:var(--text);
+  line-height:1.5;
+}
+
+.fun-block {
+  background: linear-gradient(135deg, rgba(200,169,110,0.08), rgba(200,169,110,0.03));
+  border:1px solid rgba(200,169,110,0.2);
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:24px;
+}
+
+.fun-label {
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:8px;
+}
+
+.fun-text {
+  font-size:14px;
+  color:var(--text2);
+  line-height:1.7;
+}
+
+.modal-close-bottom {
+  display:block;
+  width:100%;
+  padding:14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border:none;
+  border-radius:12px;
+  color:#0a0a0a;
+  font-size:14px;
+  font-family:'DM Sans',sans-serif;
+  font-weight:500;
+  cursor:pointer;
+  transition:opacity 0.2s, transform 0.1s;
+  letter-spacing:0.5px;
+}
+.modal-close-bottom:hover { opacity:0.9; transform:scale(1.01); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--bg3); border-radius:999px; }
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .modal-grid { grid-template-columns:1fr; }
+  .modal-img { height:220px; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<header>
+  <span class="hero-ornament">✦ Botânica & Natureza ✦</span>
+  <h1>Enciclopédia das <em>Flores</em></h1>
+  <p>Uma jornada visual por 40 flores do mundo — suas origens, significados, curiosidades e beleza.</p>
+  <div class="hero-line"></div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="search" type="text" placeholder="Buscar por nome, origem, estação..." oninput="render()"/>
+    </div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+</div>
+
+<div class="count" id="count"></div>
+<div class="grid" id="grid"></div>
+
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script>
+const flowers = [
+  { name:"Rosa", latin:"Rosa", cat:"Clássicas", origin:"Ásia", season:"Primavera/Verão", meaning:"Amor e paixão", care:"Sol pleno, rega 3× semana, pode em março. Adube mensalmente.", fun:"Existem mais de 150 espécies de rosas selvagens. A rosa mais antiga conhecida tem 35 milhões de anos, encontrada em fósseis no Colorado.", tags:["Perfumada","Jardim","Presente"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Rose_Amber_Queen-0035.jpg/640px-Rose_Amber_Queen-0035.jpg" },
+
+  { name:"Girassol", latin:"Helianthus annuus", cat:"Tropicais", origin:"América do Norte", season:"Verão", meaning:"Adoração e lealdade", care:"Sol pleno, rega abundante. Cresce até 3m de altura.", fun:"O girassol jovem gira seguindo o sol (heliotropismo). Uma única cabeça de girassol contém até 2.000 sementes organizadas em espirais de Fibonacci.", tags:["Sol","Alto","Comestível"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/640px-Sunflower_sky_backdrop.jpg" },
+
+  { name:"Orquídea", latin:"Orchidaceae", cat:"Exóticas", origin:"Trópicos globais", season:"Ano todo", meaning:"Luxo e beleza rara", care:"Luz indireta, pouca água, substrato especial de casca de pinho.", fun:"É a maior família de plantas com flores: mais de 28.000 espécies conhecidas. Algumas orquídeas imitam insetos fêmeas para atrair polinizadores machos.", tags:["Exótica","Interior","Elegante"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Dendrobium_nobile2.jpg/640px-Dendrobium_nobile2.jpg" },
+
+  { name:"Tulipa", latin:"Tulipa", cat:"Clássicas", origin:"Ásia Central", season:"Primavera", meaning:"Amor perfeito e declaração", care:"Plante bulbos no outono a 15cm de profundidade, sol moderado.", fun:"Na Holanda do século XVII, uma única tulipa rara valia o preço de uma mansão — fenômeno chamado 'Tulipomania'. Causou a primeira bolha econômica registrada.", tags:["Primavera","Bulbo","Colorida"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Simple_camera_shy.jpg/640px-Simple_camera_shy.jpg" },
+
+  { name:"Lavanda", latin:"Lavandula angustifolia", cat:"Aromáticas", origin:"Mediterrâneo", season:"Verão", meaning:"Calma e pureza", care:"Solo seco e pobre, sol pleno. Tolera frio intenso. Não regue demais.", fun:"Usada há mais de 2.500 anos. Os romanos adicionavam lavanda às suas águas de banho — seu nome vem do latim 'lavare' (lavar).", tags:["Aromática","Medicinal","Provence"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Hapus_Ddu_lavender_1.jpg/640px-Hapus_Ddu_lavender_1.jpg" },
+
+  { name:"Margarida", latin:"Bellis perennis", cat:"Silvestres", origin:"Europa", season:"Primavera", meaning:"Inocência e alegria", care:"Solo bem drenado, sol ou meia-sombra. Muito resistente.", fun:"O que parece uma única flor é na verdade uma inflorescência com centenas de flores minúsculas. 'Ela me ama, não me ama' tem origem medieval nesta flor.", tags:["Silvestre","Simples","Alegre"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Daisy_G_01.jpg/640px-Daisy_G_01.jpg" },
+
+  { name:"Hibisco", latin:"Hibiscus rosa-sinensis", cat:"Tropicais", origin:"Ásia Tropical", season:"Verão/Outono", meaning:"Beleza delicada e efêmera", care:"Sol pleno, rega regular, adube mensalmente com fertilizante rico em potássio.", fun:"É a flor nacional da Malásia. Cada flor dura apenas um dia, mas a planta produz dezenas continuamente. Usada em chás e cosméticos naturais.", tags:["Tropical","Chá","Vistosa"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Single_red_hibiscus.jpg/640px-Single_red_hibiscus.jpg" },
+
+  { name:"Jasmim", latin:"Jasminum officinale", cat:"Aromáticas", origin:"Ásia do Sul", season:"Primavera/Verão", meaning:"Amor eterno e boa sorte", care:"Sol ou meia-sombra, solo úmido, precisa de treliça para escalar.", fun:"O cheiro de jasmim é usado em mais de 80% dos perfumes femininos. Uma única grama de extrato puro requer milhares de flores colhidas à mão ao amanhecer.", tags:["Perfumada","Trepadeira","Noturna"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Jasminum_officinale0.jpg/640px-Jasminum_officinale0.jpg" },
+
+  { name:"Lírio", latin:"Lilium candidum", cat:"Clássicas", origin:"Europa/Ásia", season:"Verão", meaning:"Pureza e renovação espiritual", care:"Plante bulbos, sol pleno, excelente drenagem. Tóxico para gatos.", fun:"O pólen do lírio mancha permanentemente tecidos brancos. Na mitologia grega, nasceu das gotas de leite de Hera derramadas no céu.", tags:["Elegante","Funeral","Perfumada"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Lilium_martagon_1.jpg/640px-Lilium_martagon_1.jpg" },
+
+  { name:"Crisântemo", latin:"Chrysanthemum morifolium", cat:"Orientais", origin:"China e Japão", season:"Outono", meaning:"Longevidade e rejuvenescimento", care:"Sol pleno, solo fértil e úmido. Pode após a floração para estimular crescimento.", fun:"No Japão existe o 'Kiku no Sekku' (Festival do Crisântemo), celebrado há mais de 1.200 anos. É o símbolo da família imperial japonesa.", tags:["Outono","Longevidade","Asiática"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Chrysanthemum_2012-10-26_1884.jpg/640px-Chrysanthemum_2012-10-26_1884.jpg" },
+
+  { name:"Papoula", latin:"Papaver rhoeas", cat:"Silvestres", origin:"Europa/Ásia", season:"Primavera", meaning:"Lembrança e sonho", care:"Semeia direto no solo frio, sol pleno. Não transplanta bem.", fun:"A papoula vermelha é símbolo mundial de memória pelos soldados da Primeira Guerra Mundial, inspirado pelo poema 'In Flanders Fields' de 1915.", tags:["Silvestre","Memorial","Delicada"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Papaver_rhoeas_close.jpg/640px-Papaver_rhoeas_close.jpg" },
+
+  { name:"Azaleia", latin:"Rhododendron simsii", cat:"Arbustos", origin:"Ásia Oriental", season:"Primavera", meaning:"Feminilidade e abundância", care:"Solo ácido (pH 4.5-6), meia-sombra, muita umidade. Todas as partes são tóxicas.", fun:"A cidade de Kunming, na China, recebe milhões de turistas todo ano para ver seus festivais de azaleias. Algumas espécies vivem mais de 100 anos.", tags:["Arbusto","Primavera","Ácida"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Rhododendron_Mme_Masson.jpg/640px-Rhododendron_Mme_Masson.jpg" },
+
+  { name:"Dália", latin:"Dahlia pinnata", cat:"Clássicas", origin:"México", season:"Verão/Outono", meaning:"Gratidão e dignidade", care:"Bulbos na primavera, sol pleno, rega regular. Flores chegam a 30cm.", fun:"É a flor nacional do México. Os astecas a usavam como alimento e para tratar epilepsia. Chegou à Europa apenas em 1789 como curiosidade botânica.", tags:["México","Pompom","Outono"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/DahliaDahlstar.jpg/640px-DahliaDahlstar.jpg" },
+
+  { name:"Violeta", latin:"Viola odorata", cat:"Aromáticas", origin:"Europa", season:"Inverno/Primavera", meaning:"Modéstia e fidelidade", care:"Meia-sombra, solo úmido e rico, clima fresco. Ideal para bordaduras.", fun:"Napoleão cultivava violetas e ficou conhecido como 'Corporal Violeta'. Seus seguidores usavam violetas como símbolo secreto de lealdade.", tags:["Pequena","Perfumada","Sombra"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Viola_odorata_fg01.jpg/640px-Viola_odorata_fg01.jpg" },
+
+  { name:"Hortência", latin:"Hydrangea macrophylla", cat:"Arbustos", origin:"Ásia/Américas", season:"Verão", meaning:"Gratidão sincera e compreensão", care:"Meia-sombra, solo ácido torna as flores azuis. Rega abundante.", fun:"A cor das hortênsias muda com o pH do solo: ácido→azul, alcalino→rosa. Adicionar sulfato de alumínio torna as flores azuis mais intensas.", tags:["Jardim","Volume","Mutável"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Hydrangea_macrophylla_Hortensia.jpg/640px-Hydrangea_macrophylla_Hortensia.jpg" },
+
+  { name:"Lótus", latin:"Nelumbo nucifera", cat:"Aquáticas", origin:"Ásia e Austrália", season:"Verão", meaning:"Pureza, iluminação e renascimento", care:"Cresce em água parada a 30cm de profundidade, pleno sol.", fun:"As sementes do lótus podem germinar após 1.300 anos! A planta mantém sua temperatura interna constante a 30–36°C mesmo quando o ar está frio.", tags:["Aquática","Sagrada","Budismo"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Lotus_flowers_in_pond.jpg/640px-Lotus_flowers_in_pond.jpg" },
+
+  { name:"Íris", latin:"Iris germanica", cat:"Clássicas", origin:"Europa", season:"Primavera", meaning:"Sabedoria e mensagem divina", care:"Solo bem drenado, sol pleno, rizomas semi-expostos à superfície.", fun:"A deusa grega Íris personificava o arco-íris. Cada cor transmite uma mensagem diferente. O nome 'íris' também designa a parte colorida do olho humano.", tags:["Majestosa","Úmida","Grega"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/640px-Camponotus_flavomarginatus_ant.jpg" },
+
+  { name:"Bougainvillea", latin:"Bougainvillea spectabilis", cat:"Tropicais", origin:"Brasil", season:"Ano todo", meaning:"Acolhimento e alegria festiva", care:"Sol pleno, solo seco entre regas. Poda pesada estimula mais floração.", fun:"As coloridas 'pétalas' são brácteas — as flores verdadeiras são as partes brancas pequenas no centro. Recebeu o nome do navegador francês Louis Antoine de Bougainville.", tags:["Trepadeira","Tropical","Brasil"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Bougainvillea_glabra.jpg/640px-Bougainvillea_glabra.jpg" },
+
+  { name:"Antúrio", latin:"Anthurium andraeanum", cat:"Exóticas", origin:"Colômbia e Equador", season:"Ano todo", meaning:"Hospitalidade e abundância", care:"Luz indireta, alta umidade, substrato com casca e carvão. Evite sol direto.", fun:"A flor dura até 8 semanas no vaso — uma das mais longevas do mundo. É também chamada de 'flor flamingo' pela forma elegante de sua espata.", tags:["Interior","Tropical","Duradoura"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Anthurium_andraeanum.jpg/640px-Anthurium_andraeanum.jpg" },
+
+  { name:"Camomila", latin:"Matricaria chamomilla", cat:"Medicinais", origin:"Europa e Ásia", season:"Primavera/Verão", meaning:"Paciência e energia positiva", care:"Solo pobre e seco, sol pleno. Semeia direto. Autoressemeante.", fun:"Os egípcios dedicavam a camomila ao deus sol Ra pela eficácia contra febres. O chá de camomila é o mais consumido no mundo depois do chá preto.", tags:["Medicinal","Chá","Aromática"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Matricaria_recutita_single_flower.jpg/640px-Matricaria_recutita_single_flower.jpg" },
+
+  { name:"Cravina", latin:"Dianthus caryophyllus", cat:"Clássicas", origin:"Mediterrâneo", season:"Primavera/Verão", meaning:"Amor puro e admiração", care:"Sol pleno, solo levemente alcalino, boa drenagem. Remova flores murchas.", fun:"Uma das flores cultivadas mais antigas — registros de cultivo com mais de 2.000 anos. A palavra 'cravina' vem do latim 'caryophyllum' (cravo-da-índia, pela semelhança no aroma).", tags:["Presente","Perfumada","Resistente"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Carnation_flower_2.jpg/640px-Carnation_flower_2.jpg" },
+
+  { name:"Helicônia", latin:"Heliconia bihai", cat:"Tropicais", origin:"América Tropical", season:"Ano todo", meaning:"Vitalidade e transformação", care:"Sol pleno ou meia-sombra, solo úmido e rico. Rega diária no verão.", fun:"As brácteas em forma de barco acumulam água e se tornam microhabitats para insetos, anfíbios e até polvos arborícolas. Polinizada por beija-flores.", tags:["Tropical","Exótica","Beija-flor"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Heliconia_bihai_2.jpg/640px-Heliconia_bihai_2.jpg" },
+
+  { name:"Gardênia", latin:"Gardenia jasminoides", cat:"Aromáticas", origin:"China e Japão", season:"Verão", meaning:"Amor secreto e pureza", care:"Solo ácido (pH 5-6), luz indireta brilhante, umidade constante. Sensível a variações.", fun:"O perfume da gardênia é mais intenso à noite para atrair polinizadores noturnos. Coco Chanel adorava usar gardenias no cabelo durante seus desfiles.", tags:["Perfumada","Branca","Noturna"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/GardeniaJasminoides.jpg/640px-GardeniaJasminoides.jpg" },
+
+  { name:"Cosmos", latin:"Cosmos bipinnatus", cat:"Silvestres", origin:"México", season:"Verão/Outono", meaning:"Harmonia e ordem no universo", care:"Semeia direto, sol pleno. Não precisa adubar. Atrai borboletas e abelhas.", fun:"O nome vem do grego 'cosmos' (ordem, harmonia). Suas pétalas formam padrão matemático perfeito baseado na sequência de Fibonacci.", tags:["Silvestre","Fácil","Borboletas"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Cosmos_bipinnatus_Sonata_White.jpg/640px-Cosmos_bipinnatus_Sonata_White.jpg" },
+
+  { name:"Calêndula", latin:"Calendula officinalis", cat:"Medicinais", origin:"Europa Mediterrânea", season:"Primavera/Verão", meaning:"Alegria, luz solar e criatividade", care:"Sol pleno, solo médio. Resistente. Ótima planta companheira no horto.", fun:"Usada pela medicina desde a Antiguidade. As pétalas são comestíveis e tingem alimentos de amarelo. É eficaz como repelente natural de pragas no jardim.", tags:["Medicinal","Comestível","Repelente"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Calendula_officinalis.jpg/640px-Calendula_officinalis.jpg" },
+
+  { name:"Begônia", latin:"Begonia", cat:"Tropicais", origin:"América Tropical e Ásia", season:"Ano todo", meaning:"Pensamento amigável e respeito", care:"Meia-sombra, solo leve e drenado. Regue quando a superfície secar.", fun:"Com mais de 1.800 espécies, é um dos maiores gêneros de plantas do mundo. As folhas de algumas espécies têm padrão metálico que reflete luz como um espelho.", tags:["Interior","Colorida","Sombra"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Begonia_boweri.jpg/640px-Begonia_boweri.jpg" },
+
+  { name:"Protea", latin:"Protea cynaroides", cat:"Exóticas", origin:"África do Sul", season:"Inverno/Primavera", meaning:"Coragem, diversidade e transformação", care:"Solo arenoso e ácido, drenagem perfeita, sol pleno. Pouco fertilizante.", fun:"É a flor nacional da África do Sul. Resistiu ao fogo — suas sementes germinam melhor após incêndios. O nome homenageia o deus grego Proteus, que muda de forma.", tags:["Exótica","África","Resistente"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Protea_cynaroides.jpg/640px-Protea_cynaroides.jpg" },
+
+  { name:"Cerejeira", latin:"Prunus serrulata", cat:"Orientais", origin:"China e Japão", season:"Primavera", meaning:"Transitoriedade da vida e beleza efêmera", care:"Sol pleno, solo bem drenado e fértil. Necessita frio no inverno.", fun:"No Japão, o 'Hanami' (contemplação das flores de cerejeira) é uma tradição de mais de 1.000 anos. As flores duram apenas 1 a 2 semanas por ano.", tags:["Japão","Festival","Efêmera"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cherry_blossoms_in_Vancouver_2.jpg/640px-Cherry_blossoms_in_Vancouver_2.jpg" },
+
+  { name:"Magnólia", latin:"Magnolia grandiflora", cat:"Árvores", origin:"América do Norte e Ásia", season:"Primavera", meaning:"Nobreza, perseverança e amor à natureza", care:"Sol pleno ou meia-sombra, solo ácido e fértil. Não tolera poda drástica.", fun:"É uma das flores mais antigas do mundo — existia antes das abelhas, sendo polinizada por besouros. Fósseis mostram magnólias de 95 milhões de anos.", tags:["Árvore","Antiga","Nobre"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Magnolia_x_soulangeana_002.jpg/640px-Magnolia_x_soulangeana_002.jpg" },
+
+  { name:"Espirradeira", latin:"Nerium oleander", cat:"Arbustos", origin:"Mediterrâneo e Ásia", season:"Verão/Outono", meaning:"Destino e cuidado com o belo", care:"Sol pleno, tolera seca e maresia. Extremamente tóxica em todas as partes.", fun:"Uma das plantas mais tóxicas do mundo — até fumaça de seus galhos queimados é venenosa. Apesar disso, é amplamente usada em jardins e canteiros rodoviários.", tags:["Resistente","Tóxica","Mediterrânea"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Oleander_flowers.jpg/640px-Oleander_flowers_0.jpg" },
+
+  { name:"Ipê Amarelo", latin:"Handroanthus albus", cat:"Árvores", origin:"Brasil", season:"Inverno/Primavera", meaning:"Riqueza, força e identidade nacional", care:"Sol pleno, solo bem drenado. Tolerante à seca após estabelecido.", fun:"É considerada a árvore símbolo do Brasil por muitos brasileiros. Floresce sem folhas no inverno, criando espetáculo de amarelo puro. Vive mais de 200 anos.", tags:["Brasil","Árvore","Inverno"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tabebuia_ochracea.jpg/640px-Tabebuia_ochracea.jpg" },
+
+  { name:"Sálvia", latin:"Salvia officinalis", cat:"Medicinais", origin:"Mediterrâneo", season:"Verão", meaning:"Sabedoria, saúde e longevidade", care:"Sol pleno, solo seco e bem drenado. Resiste ao frio. Pode após floração.", fun:"O nome vem do latim 'salvere' (salvar, curar). Na Idade Média diziam: 'Quem tem sálvia no jardim, por que precisaria de médico?'", tags:["Medicinal","Culinária","Aromática"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Salvia_officinalis.jpg/640px-Salvia_officinalis.jpg" },
+
+  { name:"Crocus", latin:"Crocus sativus", cat:"Bulbosas", origin:"Europa e Oriente Médio", season:"Outono/Primavera", meaning:"Alegria, juventude e esperança", care:"Plante bulbos no outono a 8cm, sol pleno, boa drenagem. Deixe secar no verão.", fun:"O açafrão — especia mais cara do mundo — vem dos estigmas do Crocus sativus. São necessários 150.000 flores para produzir apenas 1kg de açafrão.", tags:["Bulbo","Açafrão","Precoce"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Crocus_sieberi_tricolor_2.jpg/640px-Crocus_sieberi_tricolor_2.jpg" },
+
+  { name:"Narciso", latin:"Narcissus pseudonarcissus", cat:"Bulbosas", origin:"Europa e Norte da África", season:"Primavera", meaning:"Renovação, esperança e autoconhecimento", care:"Plante bulbos no outono, solo bem drenado, sol pleno. Folhas devem secar naturalmente.", fun:"Inspirou o mito de Narciso, o jovem que se apaixonou pelo próprio reflexo. O bulbo é tóxico, mas os roedores o evitam — ótimo para proteger outros bulbos.", tags:["Bulbo","Amarelo","Primavera"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Narcissus_pseudonarcissus.jpg/640px-Narcissus_pseudonarcissus.jpg" },
+
+  { name:"Camélia", latin:"Camellia japonica", cat:"Orientais", origin:"China e Japão", season:"Inverno/Primavera", meaning:"Admiração, perfeição e excelência", care:"Meia-sombra, solo ácido, umidade constante. Não tolera calcário.", fun:"Coco Chanel usou a camélia branca como símbolo da maison Chanel desde 1920. O chá verde e o chá preto vêm de uma prima da camélia ornamental (Camellia sinensis).", tags:["Japão","Elegante","Inverno"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Camelia_Japonica_%27Elegans%27_Plena_02.jpg/640px-Camelia_Japonica_%27Elegans%27_Plena_02.jpg" },
+
+  { name:"Agapanto", latin:"Agapanthus africanus", cat:"Tropicais", origin:"África do Sul", season:"Verão", meaning:"Amor, beleza e fertilidade", care:"Sol pleno ou meia-sombra, tolera seca após estabelecido. Ótimo em vasos.", fun:"O nome vem do grego 'agape' (amor) + 'anthos' (flor): a 'flor do amor'. Suas raízes formam uma massa que literalmente parte vasos de cerâmica com o tempo.", tags:["África","Azul","Robusto"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Agapanthus_africanus_4.jpg/640px-Agapanthus_africanus_4.jpg" },
+
+  { name:"Bromélia", latin:"Bromeliaceae", cat:"Exóticas", origin:"América Tropical", season:"Ano todo", meaning:"Proteção, força e acolhida", care:"Encha o cálice central com água, meia-sombra. Floresce uma vez na vida.", fun:"A família das bromélias inclui o abacaxi. Muitas espécies acumulam água no centro formando mini-ecossistemas com sapos, insetos e micro-organismos exclusivos.", tags:["Tropical","Interior","Colorida"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Bromeliaceae_sp._Luc_Viatour.jpg/640px-Bromeliaceae_sp._Luc_Viatour.jpg" },
+
+  { name:"Gerbera", latin:"Gerbera jamesonii", cat:"Tropicais", origin:"África do Sul", season:"Primavera/Verão", meaning:"Inocência, alegria e luz do sol", care:"Sol pleno ou meia-sombra, solo levemente ácido, evite água nas folhas.", fun:"É a 5ª flor de corte mais vendida no mundo. Estudos mostram que ter gerberas em casa melhora qualidade do sono — elas liberam oxigênio e absorvem CO₂ à noite.", tags:["Colorida","Corte","África"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Gerbera_-_3.jpg/640px-Gerbera_-_3.jpg" },
+
+  { name:"Amor-Perfeito", latin:"Viola tricolor", cat:"Silvestres", origin:"Europa", season:"Inverno/Primavera", meaning:"Lembrança amorosa e pensamentos carinhosos", care:"Clima frio, sol parcial, solo úmido. Ideal para canteiros de inverno.", fun:"Na linguagem das flores vitoriana era a flor dos pensamentos amorosos — por isso em inglês se chama 'pansy' (do francês 'pensée', pensamento). É comestível!", tags:["Inverno","Comestível","Colorida"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Viola_x_wittrockiana_Padparadja.jpg/640px-Viola_x_wittrockiana_Padparadja.jpg" },
+
+  { name:"Antirrhinum", latin:"Antirrhinum majus", cat:"Silvestres", origin:"Mediterrâneo e América", season:"Primavera/Verão", meaning:"Graciosidade e força interior", care:"Sol pleno, solo bem drenado, temperaturas amenas. Pode para ramificar.", fun:"O nome popular em inglês é 'snapdragon' (dragão que morde): ao apertar a flor, ela abre e fecha como uma boca. As sementes têm formato de crânio pequeno.", tags:["Dragão","Colorida","Jardim"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Antirrhinum_majus_2.jpg/640px-Antirrhinum_majus_2.jpg" },
+
+  { name:"Mimosa", latin:"Acacia dealbata", cat:"Árvores", origin:"Austrália", season:"Inverno/Primavera", meaning:"Sensibilidade, proteção e amor materno", care:"Sol pleno, solo bem drenado. Cresce rápido. Tolera geadas leves.", fun:"É o símbolo do Dia Internacional da Mulher (8 de março) na Europa, especialmente na Itália e na Rússia. Seu perfume doce e intenso é inconfundível no inverno.", tags:["Amarela","Inverno","Perfumada"],
+    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Acacia_dealbata.jpg/640px-Acacia_dealbata.jpg" },
+];
+
+const cats = ["Todas", ...new Set(flowers.map(f => f.cat))];
+let activeTab = "Todas";
+
+// Particles
+const pEl = document.getElementById('particles');
+const COLORS = ['#c8a96e','#e8c88a','#fff8f0','#6b4c2a'];
+for(let i=0;i<28;i++){
+  const p = document.createElement('div');
+  p.className='particle';
+  const s = Math.random()*6+3;
+  p.style.cssText = `
+    width:${s}px;height:${s}px;
+    left:${Math.random()*100}%;
+    background:${COLORS[Math.floor(Math.random()*COLORS.length)]};
+    animation-duration:${8+Math.random()*14}s;
+    animation-delay:${Math.random()*10}s;
+    opacity:0;
+  `;
+  pEl.appendChild(p);
+}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = cats.map(c =>
+    `<button class="tab${activeTab===c?' active':''}" onclick="setTab('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setTab(t){ activeTab=t; renderTabs(); render(); }
+
+function render(){
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const list = flowers.filter(f => {
+    const matchCat = activeTab==='Todas' || f.cat===activeTab;
+    const matchQ = !q || [f.name,f.latin,f.origin,f.season,...f.tags].some(s=>s.toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+  document.getElementById('count').textContent = `${list.length} flor${list.length!==1?'es':''} encontrada${list.length!==1?'s':''}`;
+  document.getElementById('grid').innerHTML = list.map((f,i)=>`
+    <div class="card" style="animation:fadeIn 0.4s ease ${i*0.04}s both" onclick="open_modal(${flowers.indexOf(f)})">
+      <img src="${f.img}" alt="${f.name}" loading="lazy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Rose_Amber_Queen-0035.jpg/640px-Rose_Amber_Queen-0035.jpg'"/>
+      <div class="card-overlay">
+        <div class="card-cat">${f.cat}</div>
+        <div class="card-name">${f.name}</div>
+        <div class="card-latin">${f.latin}</div>
+        <div class="card-tags">${f.tags.map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function open_modal(idx){
+  const f = flowers[idx];
+  document.getElementById('modal-inner').innerHTML = `
+    <img class="modal-img" src="${f.img}" alt="${f.name}" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Rose_Amber_Queen-0035.jpg/640px-Rose_Amber_Queen-0035.jpg'"/>
+    <div class="modal-content">
+      <div class="modal-header-row">
+        <div class="modal-title-block">
+          <div class="modal-cat">${f.cat}</div>
+          <div class="modal-name">${f.name}</div>
+          <div class="modal-latin">${f.latin}</div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-grid">
+        <div class="info-block"><div class="info-label">Origem</div><div class="info-val">${f.origin}</div></div>
+        <div class="info-block"><div class="info-label">Floração</div><div class="info-val">${f.season}</div></div>
+        <div class="info-block"><div class="info-label">Significado</div><div class="info-val">${f.meaning}</div></div>
+        <div class="info-block"><div class="info-label">Cuidados</div><div class="info-val">${f.care}</div></div>
+      </div>
+      <div class="fun-block">
+        <div class="fun-label">✦ Curiosidade</div>
+        <div class="fun-text">${f.fun}</div>
+      </div>
+      <button class="modal-close-bottom" onclick="closeModal()">Fechar</button>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+const style = document.createElement('style');
+style.textContent = `@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`;
+document.head.appendChild(style);
+
+renderTabs();
+render();
+</script>
+</body>
+</html>
